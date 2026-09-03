@@ -21,20 +21,6 @@ const Profile: React.FC = () => {
     { label: 'Статус', value: 'В процессе', path: null },
   ];
 
-  // Подразделы (скрыты, показываются только по кнопке)
-  const subsections = [
-    { id: 'achievements', label: 'Достижения', icon: '🏆', path: '/profile/achievements' },
-    { id: 'relationships', label: 'Личные отношения', icon: '💕', path: '/profile/relationships' },
-    { id: 'habits', label: 'Привычки', icon: '🔄', path: '/profile/habits' },
-    { id: 'lifepath', label: 'Жизненный путь', icon: '📜', path: '/profile/lifepath' },
-    { id: 'travels', label: 'Путешествия', icon: '🌍', path: '/profile/travels' },
-    { id: 'career', label: 'Карьера', icon: '💼', path: '/profile/career' },
-    { id: 'documents', label: 'Личные документы', icon: '📄', path: '/profile/documents' },
-    { id: 'identity', label: 'Идентичность', icon: '🧘', path: '/profile/identity' },
-  ];
-
-  const [showSubsections, setShowSubsections] = React.useState(false);
-
   return (
     <div className="container">
       {/* Шапка */}
@@ -75,31 +61,15 @@ const Profile: React.FC = () => {
         </div>
       </Card>
 
-      {/* Кнопка "Перейти в подразделы" */}
+      {/* Кнопка "Перейти в подразделы" — ведёт на страницу Subsections */}
       <Button
         variant="gold"
         fullWidth
         className="mt-4"
-        onClick={() => setShowSubsections(!showSubsections)}
+        onClick={() => navigate('/profile/subsections')}
       >
-        {showSubsections ? 'Скрыть подразделы ↑' : 'Перейти в подразделы →'}
+        Перейти в подразделы →
       </Button>
-
-      {/* Подразделы (показываются только по кнопке) */}
-      {showSubsections && (
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          {subsections.map((sub) => (
-            <button
-              key={sub.id}
-              onClick={() => navigate(sub.path)}
-              className="bg-[#1a1515] border border-[#2a2323] rounded-xl p-3 text-center hover:border-[#c9a84c] transition-all"
-            >
-              <div className="text-2xl">{sub.icon}</div>
-              <div className="text-xs text-muted mt-1">{sub.label}</div>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
