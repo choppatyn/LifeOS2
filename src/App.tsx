@@ -4,6 +4,7 @@ import AppLayout from './layouts/AppLayout';
 
 // Страницы
 import Profile from './pages/Profile';
+import Subsections from './pages/Profile/Subsections';
 import Characteristics from './pages/Characteristics';
 import Skills from './pages/Skills';
 import Society from './pages/Society';
@@ -15,6 +16,16 @@ import Balance from './pages/Balance';
 import Journal from './pages/Journal';
 import Settings from './pages/Settings';
 
+// Подразделы Профиля
+import Achievements from './pages/Profile/Achievements';
+import Relationships from './pages/Profile/Relationships';
+import Habits from './pages/Profile/Habits';
+import LifePath from './pages/Profile/LifePath';
+import Travels from './pages/Profile/Travels';
+import Career from './pages/Profile/Career';
+import Documents from './pages/Profile/Documents';
+import Identity from './pages/Profile/Identity';
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -22,6 +33,18 @@ const App: React.FC = () => {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Profile />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="profile/subsections" element={<Subsections />} />
+          
+          {/* Подразделы Профиля */}
+          <Route path="profile/achievements" element={<Achievements />} />
+          <Route path="profile/relationships" element={<Relationships />} />
+          <Route path="profile/habits" element={<Habits />} />
+          <Route path="profile/lifepath" element={<LifePath />} />
+          <Route path="profile/travels" element={<Travels />} />
+          <Route path="profile/career" element={<Career />} />
+          <Route path="profile/documents" element={<Documents />} />
+          <Route path="profile/identity" element={<Identity />} />
+          
           <Route path="characteristics" element={<Characteristics />} />
           <Route path="skills" element={<Skills />} />
           <Route path="society" element={<Society />} />
