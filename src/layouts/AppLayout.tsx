@@ -14,15 +14,20 @@ const AppLayout: React.FC = () => {
     { id: 'more', label: 'Ещё', icon: '📋', path: '/more' },
   ];
 
+  // Определяем активную вкладку
   const activeTab = navItems.find(item => location.pathname.startsWith(item.path))?.id || 'profile';
+
+  const handleSelect = (id: string) => {
+    const item = navItems.find(i => i.id === id);
+    if (item) {
+      navigate(item.path);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
       <Outlet />
-      <BottomNav items={navItems} activeId={activeTab} onSelect={(id) => {
-        const item = navItems.find(i => i.id === id);
-        if (item) navigate(item.path);
-      }} />
+      <BottomNav items={navItems} activeId={activeTab} onSelect={handleSelect} />
     </div>
   );
 };
