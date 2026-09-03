@@ -11,9 +11,9 @@ const Career: React.FC = () => {
   ]);
 
   return (
-    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
-      <div className="flex items-center gap-3 mb-4 pt-2">
-        <button onClick={() => navigate('/profile')} className="text-2xl text-muted hover:text-[#c9a84c]">
+    <div className="container">
+      <div className="flex items-center gap-3 mb-4">
+        <button onClick={() => navigate('/profile/subsections')} className="text-2xl text-muted hover:text-[#c9a84c]">
           ←
         </button>
         <h1 className="text-xl font-bold">💼 Карьера</h1>
