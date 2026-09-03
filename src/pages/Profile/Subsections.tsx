@@ -17,7 +17,7 @@ const Subsections: React.FC = () => {
   ];
 
   return (
-    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8]">
+    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
       {/* Шапка с кнопкой назад */}
       <div className="flex items-center gap-3 mb-4 pt-2">
         <button
@@ -31,7 +31,7 @@ const Subsections: React.FC = () => {
       </div>
 
       {/* Список подразделов */}
-      <div className="space-y-3 pb-20">
+      <div className="space-y-3">
         {subsections.map((sub) => (
           <Card
             key={sub.id}
