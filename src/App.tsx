@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Characteristics from './pages/Characteristics';
 import Skills from './pages/Skills';
 import Society from './pages/Society';
+import More from './pages/More';
 import Inventory from './pages/Inventory';
 import Goals from './pages/Goals';
 import Assets from './pages/Assets';
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Route path="characteristics" element={<Characteristics />} />
           <Route path="skills" element={<Skills />} />
           <Route path="society" element={<Society />} />
+          <Route path="more" element={<More />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="goals" element={<Goals />} />
           <Route path="assets" element={<Assets />} />
