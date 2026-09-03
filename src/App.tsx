@@ -32,11 +32,11 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Profile />} />
-          
+
           {/* Профиль */}
           <Route path="profile" element={<Profile />} />
           <Route path="profile/subsections" element={<Subsections />} />
-          
+
           {/* Подразделы Профиля */}
           <Route path="profile/achievements" element={<Achievements />} />
           <Route path="profile/relationships" element={<Relationships />} />
@@ -46,7 +46,7 @@ const App: React.FC = () => {
           <Route path="profile/career" element={<Career />} />
           <Route path="profile/documents" element={<Documents />} />
           <Route path="profile/identity" element={<Identity />} />
-          
+
           {/* Основные разделы */}
           <Route path="characteristics" element={<Characteristics />} />
           <Route path="skills" element={<Skills />} />
