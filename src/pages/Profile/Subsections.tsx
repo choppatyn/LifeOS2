@@ -17,9 +17,9 @@ const Subsections: React.FC = () => {
   ];
 
   return (
-    <div className="container">
+    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8]">
       {/* Шапка с кнопкой назад */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-4 pt-2">
         <button
           onClick={() => navigate('/profile')}
           className="text-2xl text-muted hover:text-[#c9a84c] transition-colors"
@@ -31,7 +31,7 @@ const Subsections: React.FC = () => {
       </div>
 
       {/* Список подразделов */}
-      <div className="space-y-3">
+      <div className="space-y-3 pb-20">
         {subsections.map((sub) => (
           <Card
             key={sub.id}
