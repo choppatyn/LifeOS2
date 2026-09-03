@@ -40,7 +40,8 @@ const Profile: React.FC = () => {
       <Card className="mt-4">
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div><span className="text-muted">Возраст</span><br />28 лет</div>
-          <div><span className="text-muted">Гражданство</span><br />Россия</div>
+          <div><span className="text-muted">Гражданство при рождении</span><br />Россия</div>
+          <div><span className="text-muted">Действующие Гражданства</span><br />Россия</div>
           <div><span className="text-muted">Город</span><br />Дубай, ОАЭ</div>
           <div><span className="text-muted">Деятельность</span><br />Предприниматель</div>
           <div className="col-span-2"><span className="text-muted">Идея жизни</span><br />Свобода через создание ценности</div>
@@ -51,7 +52,7 @@ const Profile: React.FC = () => {
       </Card>
 
       <Button variant="gold" fullWidth className="mt-4">
-        Перейти в подразделы →
+        → Перейти в подразделы 
       </Button>
 
       <div className="grid grid-cols-2 gap-2 mt-2">
