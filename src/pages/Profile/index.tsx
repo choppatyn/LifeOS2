@@ -8,6 +8,20 @@ import { Button } from '../../components/ui/Button';
 const Profile: React.FC = () => {
   const navigate = useNavigate();
 
+  // Пункты с переходом в подразделы
+  const infoItems = [
+    { label: 'Возраст', value: '28 лет', path: null },
+    { label: 'Гражданство', value: 'Россия', path: null },
+    { label: 'Действующие гражданства', value: 'Россия →', path: '/profile/documents' },
+    { label: 'Город', value: 'Дубай, ОАЭ', path: null },
+    { label: 'Деятельность', value: 'Предприниматель', path: null },
+    { label: 'Идея жизни', value: 'Свобода через создание ценности', path: null },
+    { label: 'Мечта', value: 'Путешествовать и жить в разных странах', path: null },
+    { label: 'Семейное положение', value: 'Не женат →', path: '/profile/relationships' },
+    { label: 'Статус', value: 'В процессе', path: null },
+  ];
+
+  // Подразделы (скрыты, показываются только по кнопке)
   const subsections = [
     { id: 'achievements', label: 'Достижения', icon: '🏆', path: '/profile/achievements' },
     { id: 'relationships', label: 'Личные отношения', icon: '💕', path: '/profile/relationships' },
@@ -19,8 +33,11 @@ const Profile: React.FC = () => {
     { id: 'identity', label: 'Идентичность', icon: '🧘', path: '/profile/identity' },
   ];
 
+  const [showSubsections, setShowSubsections] = React.useState(false);
+
   return (
     <div className="container">
+      {/* Шапка */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar size="lg" name="Кирилл Смирнов" />
@@ -35,37 +52,54 @@ const Profile: React.FC = () => {
         </div>
       </div>
 
+      {/* Прогресс опыта */}
       <ProgressBar value={70} label="Опыт" showValue className="mt-2" />
 
+      {/* Информация (как на макете — слева label, справа value) */}
       <Card className="mt-4">
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div><span className="text-muted">Возраст</span><br />28 лет</div>
-          <div><span className="text-muted">Гражданство при рождении</span><br />Россия</div>
-          <div><span className="text-muted">Действующие Гражданства</span><br />Россия</div>
-          <div><span className="text-muted">Город</span><br />Дубай, ОАЭ</div>
-          <div><span className="text-muted">Деятельность</span><br />Предприниматель</div>
-          <div className="col-span-2"><span className="text-muted">Идея жизни</span><br />Свобода через создание ценности</div>
-          <div className="col-span-2"><span className="text-muted">Мечта</span><br />Путешествовать и жить в разных странах</div>
-          <div><span className="text-muted">Семейное положение</span><br />Не женат</div>
+        <div className="space-y-2 text-sm">
+          {infoItems.map((item, index) => (
+            <div
+              key={index}
+              className={`flex items-center justify-between py-1 border-b border-[#2a2323] last:border-0 ${
+                item.path ? 'cursor-pointer hover:text-[#c9a84c] transition-colors' : ''
+              }`}
+              onClick={() => item.path && navigate(item.path)}
+            >
+              <span className="text-muted">{item.label}</span>
+              <span className={`font-medium ${item.path ? 'text-[#c9a84c]' : 'text-[#e8e0d8]'}`}>
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
       </Card>
 
-      <Button variant="gold" fullWidth className="mt-4">
-        → Перейти в подразделы 
+      {/* Кнопка "Перейти в подразделы" */}
+      <Button
+        variant="gold"
+        fullWidth
+        className="mt-4"
+        onClick={() => setShowSubsections(!showSubsections)}
+      >
+        {showSubsections ? 'Скрыть подразделы ↑' : 'Перейти в подразделы →'}
       </Button>
 
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {subsections.map((sub) => (
-          <button
-            key={sub.id}
-            onClick={() => navigate(sub.path)}
-            className="bg-[#1a1515] border border-[#2a2323] rounded-xl p-3 text-center hover:border-[#c9a84c] transition-all"
-          >
-            <div className="text-2xl">{sub.icon}</div>
-            <div className="text-xs text-muted mt-1">{sub.label}</div>
-          </button>
-        ))}
-      </div>
+      {/* Подразделы (показываются только по кнопке) */}
+      {showSubsections && (
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          {subsections.map((sub) => (
+            <button
+              key={sub.id}
+              onClick={() => navigate(sub.path)}
+              className="bg-[#1a1515] border border-[#2a2323] rounded-xl p-3 text-center hover:border-[#c9a84c] transition-all"
+            >
+              <div className="text-2xl">{sub.icon}</div>
+              <div className="text-xs text-muted mt-1">{sub.label}</div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
