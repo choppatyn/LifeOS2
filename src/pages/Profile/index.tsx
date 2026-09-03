@@ -47,7 +47,6 @@ const Profile: React.FC = () => {
           <div className="col-span-2"><span className="text-muted">Идея жизни</span><br />Свобода через создание ценности</div>
           <div className="col-span-2"><span className="text-muted">Мечта</span><br />Путешествовать и жить в разных странах</div>
           <div><span className="text-muted">Семейное положение</span><br />Не женат</div>
-          <div><span className="text-muted">Статус</span><br />В процессе</div>
         </div>
       </Card>
 
