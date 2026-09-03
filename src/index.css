@@ -20,27 +20,42 @@
   #root {
     min-height: 100vh;
   }
+
+  /* Стилизация скролла */
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1a1515;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c9a84c;
+    border-radius: 4px;
+  }
 }
 
 @layer components {
   .container {
     max-width: 480px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 16px 16px 20px;
   }
 
+  /* Карточка с эффектом стекла */
   .card {
     background: linear-gradient(145deg, #1a1515, #141010);
     border: 1px solid #2a2323;
     border-radius: 16px;
     padding: 16px 18px;
-    transition: border-color 0.25s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
   .card:hover {
     border-color: #c9a84c;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.04);
   }
 
+  /* Золотой градиентный текст */
   .gold-text {
     background: linear-gradient(135deg, #c9a84c, #e8d08a);
     -webkit-background-clip: text;
@@ -52,37 +67,47 @@
     color: #7a6e62;
   }
 
+  /* Кнопка золотая */
   .btn-gold {
     background: linear-gradient(135deg, #c9a84c, #e8d08a);
     color: #0a0808;
     font-weight: 600;
-    padding: 10px 22px;
+    padding: 12px 24px;
     border: none;
     border-radius: 40px;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 24px rgba(201, 168, 76, 0.2);
   }
 
   .btn-gold:hover {
-    opacity: 0.85;
+    opacity: 0.88;
+    transform: scale(0.98);
   }
 
+  .btn-gold:active {
+    transform: scale(0.96);
+  }
+
+  /* Кнопка обводка золотая */
   .btn-outline-gold {
     background: transparent;
     color: #c9a84c;
     font-weight: 600;
-    padding: 8px 18px;
+    padding: 10px 20px;
     border: 1px solid #c9a84c;
     border-radius: 40px;
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
+    transition: all 0.2s;
   }
 
   .btn-outline-gold:hover {
     background: rgba(201, 168, 76, 0.08);
   }
 
+  /* Прогресс-бар */
   .progress-bar {
     height: 6px;
     background: #2a2323;
@@ -94,6 +119,193 @@
     height: 100%;
     background: linear-gradient(90deg, #c9a84c, #e8d08a);
     border-radius: 999px;
-    transition: width 0.6s ease;
+    transition: width 0.8s ease;
+  }
+
+  /* Аватар */
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9a84c, #e8d08a);
+    color: #0a0808;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .avatar-lg {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+  }
+
+  .avatar-md {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .avatar-sm {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  /* Бейдж уровня */
+  .level-badge {
+    background: #c9a84c;
+    color: #0a0808;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  /* Информационная строка (как на макете) */
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #1f1a1a;
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    color: #7a6e62;
+    font-size: 14px;
+  }
+
+  .info-value {
+    color: #e8e0d8;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .info-value.link {
+    color: #c9a84c;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .info-value.link:hover {
+    opacity: 0.8;
+  }
+
+  /* Сетка подразделов */
+  .subsections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .subsection-card {
+    background: linear-gradient(145deg, #1a1515, #141010);
+    border: 1px solid #2a2323;
+    border-radius: 16px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .subsection-card:hover {
+    border-color: #c9a84c;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.05);
+  }
+
+  .subsection-card .icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .subsection-card .label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #b8ada0;
+  }
+
+  /* Нижняя навигация */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #141010;
+    border-top: 1px solid #2a2323;
+    padding: 8px 0 12px;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+  }
+
+  .bottom-nav-inner {
+    display: flex;
+    justify-content: space-around;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    background: none;
+    color: #6b635a;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+    gap: 2px;
+    padding: 4px 8px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-item .icon {
+    font-size: 24px;
+  }
+
+  .nav-item.active {
+    color: #c9a84c;
+  }
+
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: #c9a84c;
+    border-radius: 4px;
+  }
+
+  .nav-item:hover {
+    color: #e8e0d8;
+  }
+
+  /* Адаптив */
+  @media (max-width: 400px) {
+    .subsections-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .subsection-card {
+      padding: 14px 8px;
+    }
+    .subsection-card .icon {
+      font-size: 26px;
+    }
+    .container {
+      padding: 12px 12px 20px;
+    }
   }
 }
