@@ -11,7 +11,6 @@ const More: React.FC = () => {
     { id: 'assets', label: 'Активы', icon: '🏦', path: '/assets' },
     { id: 'balance', label: 'Баланс', icon: '💰', path: '/balance' },
     { id: 'journal', label: 'Дневник', icon: '📖', path: '/journal' },
-    { id: 'media', label: 'Книги и фильмы', icon: '🎬', path: '/media' },
     { id: 'settings', label: 'Настройки', icon: '⚙️', path: '/settings' },
   ];
 
