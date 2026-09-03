@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Avatar } from '../../components/ui/Avatar';
@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const [showSubsections, setShowSubsections] = useState(false);
 
   // Пункты с переходом в подразделы
   const infoItems = [
@@ -21,8 +22,20 @@ const Profile: React.FC = () => {
     { label: 'Статус', value: 'В процессе', path: null },
   ];
 
+  // Подразделы
+  const subsections = [
+    { id: 'achievements', label: 'Достижения', icon: '🏆', path: '/profile/achievements' },
+    { id: 'relationships', label: 'Личные отношения', icon: '💕', path: '/profile/relationships' },
+    { id: 'habits', label: 'Привычки', icon: '🔄', path: '/profile/habits' },
+    { id: 'lifepath', label: 'Жизненный путь', icon: '📜', path: '/profile/lifepath' },
+    { id: 'travels', label: 'Путешествия', icon: '🌍', path: '/profile/travels' },
+    { id: 'career', label: 'Карьера', icon: '💼', path: '/profile/career' },
+    { id: 'documents', label: 'Личные документы', icon: '📄', path: '/profile/documents' },
+    { id: 'identity', label: 'Идентичность', icon: '🧘', path: '/profile/identity' },
+  ];
+
   return (
-    <div className="container">
+    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
       {/* Шапка */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -61,15 +74,31 @@ const Profile: React.FC = () => {
         </div>
       </Card>
 
-      {/* Кнопка "Перейти в подразделы" — ведёт на страницу Subsections */}
+      {/* Кнопка "Перейти в подразделы" — раскрывает подразделы внутри страницы */}
       <Button
         variant="gold"
         fullWidth
         className="mt-4"
-        onClick={() => navigate('/profile/subsections')}
+        onClick={() => setShowSubsections(!showSubsections)}
       >
-        Перейти в подразделы →
+        {showSubsections ? 'Скрыть подразделы ↑' : 'Перейти в подразделы →'}
       </Button>
+
+      {/* Подразделы (показываются только по кнопке) */}
+      {showSubsections && (
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          {subsections.map((sub) => (
+            <button
+              key={sub.id}
+              onClick={() => navigate(sub.path)}
+              className="bg-[#1a1515] border border-[#2a2323] rounded-xl p-3 text-center hover:border-[#c9a84c] transition-all"
+            >
+              <div className="text-2xl">{sub.icon}</div>
+              <div className="text-xs text-muted mt-1">{sub.label}</div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
