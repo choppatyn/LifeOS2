@@ -106,8 +106,7 @@
   .btn-outline-gold:hover {
     background: rgba(201, 168, 76, 0.08);
   }
-
- .input {
+.input {
   width: 100%;
   padding: 10px 12px;
   background: #0a0808;
@@ -120,6 +119,9 @@
 }
 .input:focus {
   border-color: #c9a84c;
+}
+.input::placeholder {
+  color: #5a5048;
 }
 
   /* Прогресс-бар */
