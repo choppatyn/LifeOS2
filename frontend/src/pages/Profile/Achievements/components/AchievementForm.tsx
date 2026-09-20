@@ -89,7 +89,11 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
       </Field>
 
       <div className="flex gap-2 pt-2">
-        <button type="submit" className="btn-gold flex-1" disabled={saving || !title.trim()}>
+        <button
+          type="submit"
+          className="btn-gold flex-1"
+          disabled={saving || !title.trim()}
+        >
           {saving ? 'Сохранение…' : initial ? 'Сохранить' : 'Добавить'}
         </button>
         <button type="button" className="btn-outline-gold" onClick={onCancel}>
