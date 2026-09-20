@@ -107,6 +107,21 @@
     background: rgba(201, 168, 76, 0.08);
   }
 
+ .input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #0a0808;
+  border: 1px solid #2a2323;
+  border-radius: 12px;
+  color: #e8e0d8;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input:focus {
+  border-color: #c9a84c;
+}
+
   /* Прогресс-бар */
   .progress-bar {
     height: 6px;
