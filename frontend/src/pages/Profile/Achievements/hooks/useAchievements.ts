@@ -5,26 +5,24 @@ export interface Achievement {
   title: string;
   description?: string;
   date: string;        // YYYY-MM-DD
-  category: string;    // 'personal' | 'career' | 'finance' | 'health' | 'travel' | ...
+  category: string;    // 'personal' | 'career' | 'finance' | 'health' | 'travel'
   icon?: string;
 }
 
 export const CATEGORIES = [
-  { id: 'all',      label: 'Все',      icon: '🏆' },
-  { id: 'personal', label: 'Личные',   icon: '💫' },
-  { id: 'career',   label: 'Карьера',  icon: '💼' },
-  { id: 'finance',  label: 'Финансы',  icon: '💰' },
-  { id: 'health',   label: 'Здоровье', icon: '❤️' },
+  { id: 'all',      label: 'Все',         icon: '🏆' },
+  { id: 'personal', label: 'Личные',      icon: '💫' },
+  { id: 'career',   label: 'Карьера',     icon: '💼' },
+  { id: 'finance',  label: 'Финансы',     icon: '💰' },
+  { id: 'health',   label: 'Здоровье',    icon: '❤️' },
   { id: 'travel',   label: 'Путешествия', icon: '✈️' },
 ];
 
 const STORAGE_KEY = 'lifeos.achievements';
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-const DEFAULT: Achievement[] = [];
-
 export function useAchievements() {
-  const [items, setItems] = useState<Achievement[]>(DEFAULT);
+  const [items, setItems] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +58,9 @@ export function useAchievements() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // ===== Сохранение всего массива =====
