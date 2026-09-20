@@ -1,76 +1,130 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../../components/ui/Card';
+import { useProfile, ProfileData } from './hooks/useProfile';
+import { ProfileHeader } from './components/ProfileHeader';
+import { ProfileInfoList, InfoItem } from './components/ProfileInfoList';
+import { ProfileInfoForm } from './components/ProfileInfoForm';
+import { calcAge } from '../../lib/utils';
 import { Button } from '../../components/ui/Button';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const { profile, loading, saving, saveProfile, isFilled } = useProfile();
+  const [editing, setEditing] = useState(false);
 
-  const infoItems = [
-    { label: 'Возраст', value: '28 лет' },
-    { label: 'Гражданство при рождении', value: 'Россия' },
-    { label: 'Действующие гражданства', value: 'Россия →', link: '/profile/documents' },
-    { label: 'Город', value: 'Дубай, ОАЭ' },
-    { label: 'Деятельность', value: 'Предприниматель' },
-    { label: 'Ключевая идея жизни', value: 'Свобода через создание ценности' },
-    { label: 'Ключевая мечта на жизнь', value: 'Путешествовать и жить в разных странах' },
-    { label: 'Семейное положение', value: 'Не женат →', link: '/profile/relationships' },
-    { label: 'Статус', value: 'В процессе' },
+  if (loading) {
+    return (
+      <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+        <div className="flex items-center justify-center py-20 text-muted">
+          Загрузка профиля...
+        </div>
+      </div>
+    );
+  }
+
+  // Если профиль пустой — показываем форму сразу
+  const showForm = editing || !isFilled;
+
+  const age = calcAge(profile.birthDate);
+
+  const infoItems: InfoItem[] = [
+    { icon: '🎂', label: 'Возраст', value: age ? `${age} лет` : '—' },
+    { icon: '🌐', label: 'Гражданство при рождении', value: profile.birthCitizenship || '—' },
+    {
+      icon: '📘',
+      label: 'Действующие гражданства',
+      value: profile.currentCitizenships || '—',
+      link: '/profile/documents',
+    },
+    { icon: '📍', label: 'Город', value: profile.city || '—' },
+    { icon: '💼', label: 'Деятельность', value: profile.occupation || '—' },
   ];
 
+  const handleSave = (data: Partial<ProfileData>) => {
+    saveProfile(data);
+    setEditing(false);
+  };
+
   return (
-    <div className="container">
-      {/* Шапка */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="avatar avatar-lg">К</div>
-        <div>
-          <h1 className="text-xl font-bold">Кирилл Смирнов</h1>
-          <div className="flex items-center gap-2 text-sm text-muted">
-            <span>Уровень 28</span>
-            <span>•</span>
-            <span>Опыт: 12 450 / 18 000</span>
-          </div>
-        </div>
-      </div>
+    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+      {/* Шапка профиля */}
+      <ProfileHeader
+        fullName={profile.fullName}
+        level={24}
+        energy={86}
+        health={92}
+      />
 
-      {/* Прогресс опыта */}
-      <div className="mb-4">
-        <div className="flex justify-between text-sm mb-1">
-          <span className="text-muted">Опыт</span>
-          <span className="text-gold">70%</span>
-        </div>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: '70%' }} />
-        </div>
-      </div>
+      {showForm ? (
+        <ProfileInfoForm
+          initial={profile}
+          onSave={handleSave}
+          onCancel={() => setEditing(false)}
+          saving={saving}
+        />
+      ) : (
+        <>
+          {/* Основная информация (слева иконка + подпись, справа значение) */}
+          <ProfileInfoList sectionTitle="Основная информация" items={infoItems} />
 
-      {/* Информация */}
-      <Card>
-        <div className="space-y-1">
-          {infoItems.map((item, index) => (
-            <div
-              key={index}
-              className="info-row"
-              onClick={() => item.link && navigate(item.link)}
-            >
-              <span className="info-label">{item.label}</span>
-              <span className={`info-value ${item.link ? 'link' : ''}`}>
-                {item.value}
-              </span>
+          {/* Идея жизни */}
+          <div className="card mt-3">
+            <div className="text-xs text-muted uppercase tracking-wider mb-1">
+              Ключевая идея
             </div>
-          ))}
-        </div>
-      </Card>
+            <div className="text-base font-semibold text-[#c9a84c]">
+              {profile.lifeIdea || '—'}
+            </div>
+          </div>
 
-      {/* Кнопка "Перейти в подразделы" */}
-      <Button
-        variant="gold"
-        fullWidth
-        className="mt-4"
-        onClick={() => navigate('/profile/subsections')}
-      >
-        Перейти в подразделы →
-      </Button>
+          {/* Мечта */}
+          <div className="card mt-3">
+            <div className="text-xs text-muted uppercase tracking-wider mb-1">
+              Ключевая мечта
+            </div>
+            <div className="text-base font-medium text-[#e8e0d8]">
+              {profile.lifeDream || '—'}
+            </div>
+          </div>
+
+          {/* Семейное положение и статус */}
+          <div className="mt-3">
+            <ProfileInfoList
+              items={[
+                {
+                  icon: '💍',
+                  label: 'Семейное положение',
+                  value: profile.maritalStatus || '—',
+                  link: '/profile/relationships',
+                },
+                {
+                  icon: '🚀',
+                  label: 'Статус',
+                  value: profile.status || '—',
+                },
+              ]}
+            />
+          </div>
+
+          {/* Редактировать */}
+          <button
+            onClick={() => setEditing(true)}
+            className="btn-outline-gold w-full mt-3"
+          >
+            ✏️ Редактировать профиль
+          </button>
+
+          {/* Перейти в подразделы */}
+          <Button
+            variant="gold"
+            fullWidth
+            className="mt-3"
+            onClick={() => navigate('/profile/subsections')}
+          >
+            Перейти в подразделы →
+          </Button>
+        </>
+      )}
     </div>
   );
 };
