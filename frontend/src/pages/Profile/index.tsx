@@ -1,100 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../hooks/useApi';
-import { Card } from '../../components/ui/Card';
-import { Avatar } from '../../components/ui/Avatar';
-import { ProgressBar } from '../../components/ui/ProgressBar';
+import { useProfile, ProfileData } from './hooks/useProfile';
+import { ProfileHeader } from './components/ProfileHeader';
+import { ProfileInfoList, InfoItem } from './components/ProfileInfoList';
+import { ProfileInfoForm } from './components/ProfileInfoForm';
+import { calcAge } from '../../lib/utils';
 import { Button } from '../../components/ui/Button';
-
-interface ProfileData {
-  fullName: string;
-  age: number;
-  birthCitizenship: string;
-  currentCitizenships: string[];
-  city: string;
-  occupation: string;
-  lifeIdea: string;
-  lifeDream: string;
-  maritalStatus: string;
-  status: string;
-}
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { profile, loading, saving, saveProfile, isFilled } = useProfile();
 
-  useEffect(() => {
-    api.get('/profile').then(data => {
-      setProfile(data);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
+  // editing = true  → Экран 2 (форма)
+  // editing = false → Экран 1 (просмотр)
+  const [editing, setEditing] = useState(false);
 
-  if (loading) return <div className="p-4 text-center text-muted">Загрузка...</div>;
-  if (!profile) return <div className="p-4 text-center text-muted">Профиль не найден</div>;
+  if (loading) {
+    return (
+      <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+        <div className="flex items-center justify-center py-20 text-muted">
+          Загрузка профиля…
+        </div>
+      </div>
+    );
+  }
 
-  const subsections = [
-    { id: 'achievements', label: 'Достижения', icon: '🏆' },
-    { id: 'relationships', label: 'Личные отношения', icon: '💕' },
-    { id: 'habits', label: 'Привычки', icon: '🔄' },
-    { id: 'lifepath', label: 'Жизненный путь', icon: '📜' },
-    { id: 'travels', label: 'Путешествия', icon: '🌍' },
-    { id: 'career', label: 'Карьера', icon: '💼' },
-    { id: 'documents', label: 'Личные документы', icon: '📄' },
-    { id: 'identity', label: 'Идентичность', icon: '🧘' },
+  // Если профиль ещё не заполнен — принудительно открываем форму
+  const showForm = editing || !isFilled;
+
+  const age = calcAge(profile.birthDate);
+
+  const infoItems: InfoItem[] = [
+    { icon: '🎂', label: 'Возраст', value: age ? `${age} лет` : '—' },
+    {
+      icon: '🌐',
+      label: 'Гражданство при рождении',
+      value: profile.birthCitizenship || '—',
+    },
+    {
+      icon: '📘',
+      label: 'Действующие гражданства',
+      value: profile.currentCitizenships || '—',
+      link: '/profile/documents',
+    },
+    { icon: '📍', label: 'Город', value: profile.city || '—' },
+    {
+      icon: '💼',
+      label: 'Деятельность',
+      value: profile.occupation || '—',
+    },
   ];
 
+  const handleSave = (data: Partial<ProfileData>) => {
+    saveProfile(data);
+    setEditing(false);
+  };
+
   return (
-    <div className="container max-w-md mx-auto px-4 py-4 space-y-4">
-      {/* Шапка */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar size="lg" src={null} name={profile.fullName} />
-          <div>
-            <h1 className="text-xl font-bold">{profile.fullName}</h1>
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <span>Уровень 28</span>
-              <span>•</span>
-              <span>Опыт: 12 450 / 18 000</span>
+    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+      {/* Шапка профиля — видна всегда */}
+      <ProfileHeader
+        fullName={profile.fullName}
+        level={24}
+        energy={86}
+        health={92}
+      />
+
+      {showForm ? (
+        // ================== ЭКРАН 2: РЕДАКТИРОВАНИЕ ==================
+        <ProfileInfoForm
+          initial={profile}
+          onSave={handleSave}
+          onCancel={() => setEditing(false)}
+          saving={saving}
+        />
+      ) : (
+        // ================== ЭКРАН 1: ПРОСМОТР ==================
+        <>
+          {/* Основная информация */}
+          <ProfileInfoList
+            sectionTitle="Основная информация"
+            items={infoItems}
+          />
+
+          {/* Ключевая идея */}
+          <div className="card mt-3">
+            <div className="text-xs text-muted uppercase tracking-wider mb-1">
+              Ключевая идея
+            </div>
+            <div className="text-base font-semibold text-[#c9a84c]">
+              {profile.lifeIdea || '—'}
             </div>
           </div>
-        </div>
-      </div>
 
-      <ProgressBar value={70} label="Опыт" showValue />
+          {/* Ключевая мечта */}
+          <div className="card mt-3">
+            <div className="text-xs text-muted uppercase tracking-wider mb-1">
+              Ключевая мечта
+            </div>
+            <div className="text-base font-medium text-[#e8e0d8]">
+              {profile.lifeDream || '—'}
+            </div>
+          </div>
 
-      {/* Информация */}
-      <Card>
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div><span className="text-muted">Возраст</span><br />{profile.age} лет</div>
-          <div><span className="text-muted">Гражданство</span><br />{profile.birthCitizenship}</div>
-          <div><span className="text-muted">Город</span><br />{profile.city}</div>
-          <div><span className="text-muted">Деятельность</span><br />{profile.occupation}</div>
-          <div className="col-span-2"><span className="text-muted">Идея жизни</span><br />{profile.lifeIdea}</div>
-          <div className="col-span-2"><span className="text-muted">Мечта</span><br />{profile.lifeDream}</div>
-          <div><span className="text-muted">Семейное положение</span><br />{profile.maritalStatus}</div>
-          <div><span className="text-muted">Статус</span><br />{profile.status}</div>
-        </div>
-      </Card>
+          {/* Семейное положение + Статус */}
+          <div className="mt-3">
+            <ProfileInfoList
+              items={[
+                {
+                  icon: '💍',
+                  label: 'Семейное положение',
+                  value: profile.maritalStatus || '—',
+                  link: '/profile/relationships',
+                },
+                {
+                  icon: '🚀',
+                  label: 'Статус',
+                  value: profile.status || '—',
+                },
+              ]}
+            />
+          </div>
 
-      {/* Подразделы */}
-      <Button variant="gold" fullWidth onClick={() => {}}>
-        Перейти в подразделы →
-      </Button>
-
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {subsections.map((sub) => (
+          {/* Кнопка «Редактировать профиль» */}
           <button
-            key={sub.id}
-            onClick={() => navigate(`/profile/${sub.id}`)}
-            className="bg-[#1a1515] border border-[#2a2323] rounded-xl p-3 text-center hover:border-[#c9a84c] transition-all"
+            onClick={() => setEditing(true)}
+            className="btn-outline-gold w-full mt-3"
           >
-            <div className="text-2xl">{sub.icon}</div>
-            <div className="text-xs text-muted mt-1">{sub.label}</div>
+            ✏️ Редактировать профиль
           </button>
-        ))}
-      </div>
+
+          {/* Кнопка «Перейти в подразделы» */}
+          <Button
+            variant="gold"
+            fullWidth
+            className="mt-3"
+            onClick={() => navigate('/profile/subsections')}
+          >
+            Перейти в подразделы →
+          </Button>
+        </>
+      )}
     </div>
   );
 };
