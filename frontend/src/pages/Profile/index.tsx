@@ -11,13 +11,18 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, loading, saving, saveProfile, isFilled } = useProfile();
 
-  // editing = true  → Экран 2 (форма)
-  // editing = false → Экран 1 (просмотр)
   const [editing, setEditing] = useState(false);
 
   if (loading) {
     return (
       <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+        {/* Заголовок страницы — даже во время загрузки */}
+        <div className="flex items-center gap-3 mb-4 pt-2">
+          <span className="text-lg text-muted">👤</span>
+          <h2 className="text-sm font-semibold tracking-[0.25em] text-[#c9a84c] uppercase">
+            Профиль
+          </h2>
+        </div>
         <div className="flex items-center justify-center py-20 text-muted">
           Загрузка профиля…
         </div>
@@ -25,9 +30,7 @@ const Profile: React.FC = () => {
     );
   }
 
-  // Если профиль ещё не заполнен — принудительно открываем форму
   const showForm = editing || !isFilled;
-
   const age = calcAge(profile.birthDate);
 
   const infoItems: InfoItem[] = [
@@ -58,7 +61,15 @@ const Profile: React.FC = () => {
 
   return (
     <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
-      {/* Шапка профиля — видна всегда */}
+      {/* ==================== ЗАГОЛОВОК СТРАНИЦЫ ==================== */}
+      <div className="flex items-center gap-3 mb-4 pt-2">
+        <span className="text-lg text-muted">👤</span>
+        <h2 className="text-sm font-semibold tracking-[0.25em] text-[#c9a84c] uppercase">
+          Профиль
+        </h2>
+      </div>
+
+      {/* ==================== ШАПКА ПРОФИЛЯ ==================== */}
       <ProfileHeader
         fullName={profile.fullName}
         level={24}
