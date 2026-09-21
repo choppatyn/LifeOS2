@@ -14,17 +14,19 @@ const AppLayout: React.FC = () => {
     { id: 'more', label: 'Ещё', icon: '📋', path: '/more' },
   ];
 
-  const activeTab = navItems.find(item => location.pathname.startsWith(item.path))?.id || 'profile';
-
-  const handleSelect = (id: string) => {
-    const item = navItems.find(i => i.id === id);
-    if (item) navigate(item.path);
-  };
+  const activeTab = navItems.find(i => location.pathname.startsWith(i.path))?.id || 'profile';
 
   return (
-    <div className="min-h-screen bg-[#0a0808] text-[#e8e0d8]">
+    <div className="min-h-screen pb-20">
       <Outlet />
-      <BottomNav items={navItems} activeId={activeTab} onSelect={handleSelect} />
+      <BottomNav
+        items={navItems}
+        activeId={activeTab}
+        onSelect={(id) => {
+          const item = navItems.find(i => i.id === id);
+          if (item) navigate(item.path);
+        }}
+      />
     </div>
   );
 };
