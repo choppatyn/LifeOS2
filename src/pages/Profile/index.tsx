@@ -83,13 +83,19 @@ const Profile: React.FC = () => {
             />
           </div>
 
-          <button onClick={() => setEditing(true)} className="btn-outline-gold w-full mt-3">
-            ✏️ Редактировать профиль
-          </button>
+         <button
+  onClick={() => setEditing(true)}
+  className="btn-wide btn-wide-outline mt-3"
+>
+  ✏️ Редактировать профиль
+</button>
 
-          <Button variant="gold" fullWidth className="mt-3" onClick={() => navigate('/profile/subsections')}>
-            Перейти в подразделы →
-          </Button>
+<button
+  onClick={() => navigate('/profile/subsections')}
+  className="btn-wide btn-wide-gold mt-3"
+>
+  Перейти в подразделы →
+</button>
         </>
       )}
     </div>
