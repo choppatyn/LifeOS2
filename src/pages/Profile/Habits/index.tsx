@@ -1,91 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FloatingAddButton } from '../../../components/ui/FloatingAddButton';
-
-interface Habit {
-  id: string;
-  name: string;
-  streak: number;
-  progress: number;
-}
-
-const STORAGE_KEY = 'lifeos.habits';
+import { useHabits, Habit } from './hooks/useHabits';
 
 const Habits: React.FC = () => {
   const navigate = useNavigate();
+  const { items, loading, saving, addHabit, updateHabit, deleteHabit } = useHabits();
 
-  const [habits, setHabits] = useState<Habit[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Habit | null>(null);
 
-  // Поля формы
   const [name, setName] = useState('');
   const [streak, setStreak] = useState('0');
   const [progress, setProgress] = useState('0');
 
-  // Загрузка из localStorage
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      try { setHabits(JSON.parse(raw)); } catch {}
-    } else {
-      // Первый запуск — демо-данные
-      const demo: Habit[] = [
-        { id: '1', name: 'Отказ от сахара', streak: 12, progress: 85 },
-        { id: '2', name: 'Зарядка по утрам', streak: 8, progress: 70 },
-        { id: '3', name: 'Чтение 30 минут', streak: 5, progress: 60 },
-        { id: '4', name: 'Медитация', streak: 3, progress: 40 },
-      ];
-      setHabits(demo);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
-    }
-  }, []);
-
-  // Сохранение в localStorage
-  const persist = (next: Habit[]) => {
-    setHabits(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  };
-
   const openNew = () => {
     setEditing(null);
-    setName('');
-    setStreak('0');
-    setProgress('0');
+    setName(''); setStreak('0'); setProgress('0');
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openEdit = (habit: Habit) => {
-    setEditing(habit);
-    setName(habit.name);
-    setStreak(String(habit.streak));
-    setProgress(String(habit.progress));
+  const openEdit = (h: Habit) => {
+    setEditing(h);
+    setName(h.name); setStreak(String(h.streak)); setProgress(String(h.progress));
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) return;
     const data = {
       name: name.trim(),
       streak: parseInt(streak) || 0,
       progress: Math.min(100, Math.max(0, parseInt(progress) || 0)),
     };
-
     if (editing) {
-      persist(habits.map((h) => (h.id === editing.id ? { ...h, ...data } : h)));
+      await updateHabit(editing.id, data);
     } else {
-      persist([{ ...data, id: Date.now().toString() }, ...habits]);
+      await addHabit(data);
     }
     setShowForm(false);
     setEditing(null);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Удалить привычку?')) {
-      persist(habits.filter((h) => h.id !== id));
-    }
+  const handleDelete = async (id: string) => {
+    if (confirm('Удалить привычку?')) await deleteHabit(id);
   };
 
   return (
@@ -102,7 +62,7 @@ const Habits: React.FC = () => {
         <span className="text-sm font-semibold tracking-[0.2em] text-[#c9a84c] uppercase">
           Привычки
         </span>
-        <span className="text-xs text-muted ml-auto">{habits.length} шт.</span>
+        <span className="text-xs text-muted ml-auto">{items.length} шт.</span>
       </div>
 
       {/* Форма */}
@@ -130,7 +90,6 @@ const Habits: React.FC = () => {
                 type="number"
                 value={streak}
                 onChange={(e) => setStreak(e.target.value)}
-                placeholder="0"
                 className="input"
               />
             </div>
@@ -140,7 +99,6 @@ const Habits: React.FC = () => {
                 type="number"
                 value={progress}
                 onChange={(e) => setProgress(e.target.value)}
-                placeholder="0"
                 min="0"
                 max="100"
                 className="input"
@@ -149,10 +107,13 @@ const Habits: React.FC = () => {
           </div>
 
           <div className="flex gap-2 pt-2">
-            <button onClick={handleSave} className="btn-gold flex-1" disabled={!name.trim()}>
-              {editing ? 'Сохранить' : 'Добавить'}
+            <button onClick={handleSave} className="btn-gold flex-1" disabled={!name.trim() || saving}>
+              {saving ? 'Сохранение…' : editing ? 'Сохранить' : 'Добавить'}
             </button>
-            <button onClick={() => { setShowForm(false); setEditing(null); }} className="btn-outline-gold">
+            <button
+              onClick={() => { setShowForm(false); setEditing(null); }}
+              className="btn-outline-gold"
+            >
               Отмена
             </button>
           </div>
@@ -160,7 +121,9 @@ const Habits: React.FC = () => {
       )}
 
       {/* Список */}
-      {habits.length === 0 ? (
+      {loading ? (
+        <div className="text-center text-muted py-8">Загрузка…</div>
+      ) : items.length === 0 ? (
         <div className="text-center text-muted py-8">
           Пока нет привычек.
           <br />
@@ -168,7 +131,7 @@ const Habits: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {habits.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               className="card cursor-pointer hover:border-[#c9a84c] transition-all"
