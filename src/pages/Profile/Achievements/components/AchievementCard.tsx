@@ -15,9 +15,11 @@ export const AchievementCard: React.FC<Props> = ({ item, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="flex items-center gap-3 cursor-pointer transition-all rounded-2xl px-4 py-3 mb-2 hover:border-[#c9a84c]"
+      className="flex items-center gap-3 cursor-pointer transition-all px-3 py-3 mb-2 
+      hover:border-[#c9a84c]"
       style={{
         background: 'var(--color-card-bg)',
+        borderRadius: 'var(--radius-card)',
         border: '1px solid var(--color-card-border)',
       }}
     >
