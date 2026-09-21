@@ -1,10 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card } from '../../components/ui/Card';
+import { ListRow } from '../../components/ui/ListRow';
 
 const More: React.FC = () => {
-  const navigate = useNavigate();
-
   const items = [
     { id: 'inventory', label: 'Инвентарь', icon: '🎒', path: '/inventory' },
     { id: 'goals', label: 'Цели', icon: '🎯', path: '/goals' },
@@ -15,23 +12,18 @@ const More: React.FC = () => {
   ];
 
   return (
-    <div className="container">
-      <h1 className="text-xl font-bold">📋 Ещё</h1>
-      <p className="text-muted text-sm mt-1">Все разделы приложения</p>
+    <div className="container min-h-screen pb-20">
+      <h1 className="text-base font-semibold mb-1">Ещё</h1>
+      <p className="text-xs text-muted mb-4">Все разделы приложения</p>
 
-      <div className="mt-4 space-y-2">
-        {items.map((item) => (
-          <Card
-            key={item.id}
-            className="flex items-center justify-between cursor-pointer hover:border-[#c9a84c] transition-all"
-            onClick={() => navigate(item.path)}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{item.icon}</span>
-              <span className="font-medium">{item.label}</span>
-            </div>
-        <span className="text-[#4a3f36] text-2xl leading-none">›</span>
-          </Card>
+      <div className="space-y-2">
+        {items.map((s) => (
+          <ListRow
+            key={s.id}
+            icon={s.icon}
+            title={s.label}
+            path={s.path}
+          />
         ))}
       </div>
     </div>
