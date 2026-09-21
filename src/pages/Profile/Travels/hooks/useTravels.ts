@@ -28,7 +28,8 @@ export function useTravels() {
         if (!cancelled && res && Array.isArray(res.data)) {
           setItems(res.data);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data));
-          setLoading(false); return;
+          setLoading(false);
+          return;
         }
       } catch (e) { console.warn(e); }
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -42,4 +43,24 @@ export function useTravels() {
   const persist = useCallback(async (next: Travel[]) => {
     setItems(next);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    try { setSaving(true); await api.saveData(SECTION, next); setError
+    try { setSaving(true); await api.saveData(SECTION, next); setError(null); }
+    catch { setError('Сохранено локально'); }
+    finally { setSaving(false); }
+  }, []);
+
+  const addItem = useCallback(async (data: Omit<Travel, 'id'>) => {
+    const item = { ...data, id: Date.now().toString() };
+    await persist([item, ...items]);
+    return item;
+  }, [items, persist]);
+
+  const updateItem = useCallback(async (id: string, data: Partial<Travel>) => {
+    await persist(items.map((i) => (i.id === id ? { ...i, ...data } : i)));
+  }, [items, persist]);
+
+  const deleteItem = useCallback(async (id: string) => {
+    await persist(items.filter((i) => i.id !== id));
+  }, [items, persist]);
+
+  return { items, loading, saving, error, addItem, updateItem, deleteItem };
+}
