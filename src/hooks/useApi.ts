@@ -4,7 +4,6 @@ const API_URL =
 
 /**
  * Всегда берём свежий initData из Telegram (без кэша).
- * Если Telegram ещё не загрузился — ждём до 3 секунд.
  */
 function getInitData(): string {
   const tg = (window as any)?.Telegram?.WebApp;
@@ -13,7 +12,8 @@ function getInitData(): string {
 
 /**
  * Ждём, пока Telegram WebApp отдаст initData.
- * Нужно потому, что скрипт telegram-web-app.js может грузиться с задержкой.
+ * Скрипт telegram-web-app.js грузится с задержкой,
+ * поэтому initData может быть пустым в первые 100–500 мс.
  */
 async function waitForInitData(timeoutMs = 3000): Promise<string> {
   const start = Date.now();
@@ -35,7 +35,7 @@ async function request(
 ) {
   const initData = await waitForInitData();
 
-  // Для отладки: покажет в консоли, что уходит
+  // Отладка: покажет в DevTools, что уходит на backend
   console.log('[API]', method, path, 'initData length:', initData.length);
 
   const headers: Record<string, string> = {
