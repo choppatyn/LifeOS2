@@ -11,15 +11,16 @@
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0a0808;
+    background: #0d0b12;
     color: #e8e0d8;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
 
-  #root {
-    min-height: 100vh;
-  }
+#root {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0d0b12 0%, #0a0810 100%);
+}
 
   /* Стилизация скролла */
   ::-webkit-scrollbar {
