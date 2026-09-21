@@ -7,14 +7,8 @@ import { AchievementForm } from './components/AchievementForm';
 const Achievements: React.FC = () => {
   const navigate = useNavigate();
   const {
-    items,
-    loading,
-    saving,
-    total,
-    thisYear,
-    addAchievement,
-    updateAchievement,
-    deleteAchievement,
+    items, loading, saving, total, thisYear,
+    addAchievement, updateAchievement, deleteAchievement,
   } = useAchievements();
 
   const [filter, setFilter] = useState<string>('all');
@@ -39,14 +33,9 @@ const Achievements: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Удалить достижение?')) {
-      await deleteAchievement(id);
-    }
-  };
-
   return (
     <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-24">
+      {/* Шапка */}
       <div className="flex items-center gap-3 mb-4 pt-2">
         <button
           onClick={() => navigate('/profile/subsections')}
@@ -55,24 +44,25 @@ const Achievements: React.FC = () => {
         >
           ←
         </button>
-        <span className="text-lg">🏆</span>
-        <h2 className="text-sm font-semibold tracking-[0.2em] text-[#c9a84c] uppercase">
+        <span className="text-sm font-semibold tracking-[0.2em] text-[#c9a84c] uppercase">
           Достижения
-        </h2>
+        </span>
       </div>
 
+      {/* Статистика */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="card text-center">
           <div className="text-3xl font-bold text-[#c9a84c]">{total}</div>
-          <div className="text-xs text-muted mt-1">Всего достижений</div>
+          <div className="text-[11px] text-muted mt-1 whitespace-nowrap">Всего достижений</div>
         </div>
         <div className="card text-center">
           <div className="text-3xl font-bold text-[#c9a84c]">{thisYear}</div>
-          <div className="text-xs text-muted mt-1">В этом году</div>
+          <div className="text-[11px] text-muted mt-1 whitespace-nowrap">В этом году</div>
         </div>
       </div>
 
-   <div className="flex flex-wrap gap-2 mb-4">
+      {/* Фильтры */}
+      <div className="flex flex-wrap gap-2 mb-4">
         {CATEGORIES.map((c) => (
           <button
             key={c.id}
@@ -83,11 +73,12 @@ const Achievements: React.FC = () => {
                 : 'bg-[#1a1515] border border-[#2a2323] text-muted'
             }`}
           >
-            {c.icon} {c.label}
+            {c.label}
           </button>
         ))}
       </div>
 
+      {/* Форма */}
       {showForm && (
         <div className="card mb-4">
           <AchievementForm
@@ -102,6 +93,7 @@ const Achievements: React.FC = () => {
         </div>
       )}
 
+      {/* Список */}
       {loading ? (
         <div className="text-center text-muted py-8">Загрузка…</div>
       ) : filtered.length === 0 ? (
@@ -111,25 +103,25 @@ const Achievements: React.FC = () => {
           Нажми «+», чтобы добавить первое.
         </div>
       ) : (
-        <div className="space-y-2">
+        <div>
           {filtered.map((item) => (
             <AchievementCard
               key={item.id}
               item={item}
               onClick={() => handleEdit(item)}
-              onDelete={() => handleDelete(item.id)}
             />
           ))}
         </div>
       )}
 
+      {/* Кнопка "+" */}
       <button
         onClick={() => {
           setEditingItem(null);
           setShowForm(true);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        className="fixed bottom-24 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg transition-transform hover:scale-105"
+        className="fixed bottom-24 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold transition-transform hover:scale-105"
         style={{
           background: 'linear-gradient(135deg, #c9a84c, #e8d08a)',
           color: '#0a0808',
