@@ -49,6 +49,22 @@ def require_user():
 def health():
     return jsonify({'status': 'ok'})
 
+# ============================================================
+# DEBUG — временно, чтобы увидеть, что приходит от Telegram
+# ============================================================
+@app.route('/api/debug/last', methods=['POST', 'GET'])
+def debug_last():
+    payload = request.get_json(silent=True) or {}
+    init_data = payload.get('initData') or request.headers.get('X-Telegram-Init-Data') or ''
+    from auth import verify_init_data
+    verified = verify_init_data(init_data) if init_data else None
+    return jsonify({
+        'has_init_data': bool(init_data),
+        'init_data_length': len(init_data),
+        'init_data_preview': init_data[:80] if init_data else '',
+        'verified_user': verified,
+        'bot_token_len': len(os.getenv('BOT_TOKEN', '')),
+    })
 
 # ============================================================
 # AUTH — проверка входа
