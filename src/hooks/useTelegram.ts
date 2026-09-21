@@ -24,6 +24,7 @@ export function useTelegram() {
   const [webApp, setWebApp] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [initData, setInitData] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -33,7 +34,12 @@ export function useTelegram() {
       setWebApp(tg);
       setUser(tg.initDataUnsafe?.user);
       setInitData(tg.initData || '');
+    } else {
+      // Dev mode — вне Telegram
+      setUser({ id: 999999999, first_name: 'Dev', username: 'dev' });
+      setInitData('');
     }
+    setLoading(false);
   }, []);
 
   return {
@@ -41,5 +47,6 @@ export function useTelegram() {
     user,
     initData,
     isTelegram: !!webApp,
+    loading,
   };
 }
