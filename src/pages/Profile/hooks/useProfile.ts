@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
+import { api } from '../../../hooks/useApi';
 
 export interface ProfileData {
-  id?: string;
   fullName: string;
-  birthDate: string;       // ISO дата
+  birthDate: string;
   birthCitizenship: string;
   currentCitizenships: string;
   city: string;
@@ -14,7 +14,10 @@ export interface ProfileData {
   status: string;
 }
 
-const DEFAULT_PROFILE: ProfileData = {
+const SECTION = 'profile';
+const STORAGE_KEY = 'lifeos.profile';
+
+const EMPTY: ProfileData = {
   fullName: '',
   birthDate: '',
   birthCitizenship: '',
@@ -27,74 +30,67 @@ const DEFAULT_PROFILE: ProfileData = {
   status: '',
 };
 
-const STORAGE_KEY = 'lifeos.profile';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api';
-
 export function useProfile() {
-  const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
+  const [profile, setProfile] = useState<ProfileData>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Загрузка
+  // ===== Загрузка: API → fallback localStorage =====
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/profile`, {
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (!cancelled && data) {
-            setProfile({ ...DEFAULT_PROFILE, ...data });
-            return;
-          }
-        }
-
-        // Фолбэк — localStorage
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw && !cancelled) {
-          setProfile({ ...DEFAULT_PROFILE, ...JSON.parse(raw) });
+        const res = await api.getData(SECTION);
+        if (
+          !cancelled &&
+          res &&
+          res.data &&
+          typeof res.data === 'object' &&
+          !Array.isArray(res.data)
+        ) {
+          const merged = { ...EMPTY, ...res.data };
+          setProfile(merged);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          setLoading(false);
+          return;
         }
       } catch (e) {
-        // Фолбэк на localStorage
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) setProfile({ ...DEFAULT_PROFILE, ...JSON.parse(raw) });
-      } finally {
-        if (!cancelled) setLoading(false);
+        console.warn('Backend unavailable, falling back to localStorage:', e);
       }
+
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw && !cancelled) {
+        try { setProfile({ ...EMPTY, ...JSON.parse(raw) }); } catch {}
+      }
+      if (!cancelled) setLoading(false);
     }
 
     load();
     return () => { cancelled = true; };
   }, []);
 
-  // Сохранение
-  const saveProfile = useCallback(async (next: Partial<ProfileData>) => {
-    setSaving(true);
-    setError(null);
+  // ===== Сохранение: API + localStorage =====
+  const saveProfile = useCallback(
+    async (next: Partial<ProfileData>) => {
+      const merged: ProfileData = { ...profile, ...next };
+      setProfile(merged);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
 
-    const merged: ProfileData = { ...profile, ...next };
-    setProfile(merged);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-
-    try {
-      await fetch(`${API_URL}/profile`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(merged),
-      });
-    } catch (e: any) {
-      setError('Не удалось синхронизировать с сервером (данные сохранены локально)');
-    } finally {
-      setSaving(false);
-    }
-  }, [profile]);
+      try {
+        setSaving(true);
+        await api.saveData(SECTION, merged);
+        setError(null);
+      } catch {
+        setError('Сохранено локально — сервер недоступен');
+      } finally {
+        setSaving(false);
+      }
+    },
+    [profile]
+  );
 
   return {
     profile,
