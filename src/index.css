@@ -1,19 +1,19 @@
 :root {
-  --color-bg-page: #0d0b12;
-  --color-bg-page-bottom: #0a0810;
-  --color-card-bg: #14121a;
-  --color-card-border: #23202a;
-  --color-divider: #1c1922;
+  --color-bg-page: #13111a;
+  --color-bg-page-bottom: #0f0d17;
+  --color-card-bg: #1a1822;
+  --color-card-border: #262432;
+  --color-divider: #2a2838;
   --color-gold: #c9a84c;
   --color-gold-light: #e8d08a;
   --color-text-primary: #e8e0d8;
   --color-text-muted: #7a6e62;
   --color-arrow: #4a3f36;
 
-  --color-input-bg: #0d0b12;
-  --color-input-border: #23202a;
-  --color-progress-bg: #23202a;
-  --color-nav-bg: #0a0810;
+  --color-input-bg: #0f0d17;
+  --color-input-border: #262432;
+  --color-progress-bg: #262432;
+  --color-nav-bg: #0f0d17;
   --color-nav-border: #23202a;
   --color-nav-text: #6b635a;
 }
