@@ -44,8 +44,8 @@
 
   /* Карточка с эффектом стекла */
   .card {
-    background: linear-gradient(145deg, #1a1515, #141010);
-    border: 1px solid #2a2323;
+  background: #14121a;
+  border: 1px solid #23202a;
     border-radius: 16px;
     padding: 16px 18px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
