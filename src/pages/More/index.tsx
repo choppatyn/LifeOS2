@@ -30,7 +30,7 @@ const More: React.FC = () => {
               <span className="text-2xl">{item.icon}</span>
               <span className="font-medium">{item.label}</span>
             </div>
-            <span className="text-muted">→</span>
+        <span className="text-[#4a3f36] text-2xl leading-none">›</span>
           </Card>
         ))}
       </div>
