@@ -99,6 +99,18 @@ def put_data(section):
     save_section(user['id'], section, data)
     return jsonify({'ok': True})
 
+@app.route('/api/debug/db')
+def debug_db():
+    """Временный маршрут для проверки содержимого БД."""
+    from database import get_db
+    conn = get_db()
+    users = conn.execute('SELECT id, telegram_id, username, first_name FROM users').fetchall()
+    data = conn.execute('SELECT user_id, section, length(data) FROM user_data').fetchall()
+    conn.close()
+    return jsonify({
+        'users': [dict(u) for u in users],
+        'data': [dict(d) for d in data],
+    })
 
 # ============================================================
 # ЗАПУСК
