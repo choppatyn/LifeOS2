@@ -106,3 +106,12 @@ def put_data(section):
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
+
+@app.route('/')
+def root():
+    return jsonify({
+        'service': 'LifeOS API',
+        'status': 'running',
+        'endpoints': ['/api/health', '/api/auth', '/api/data/<section>']
+    })
