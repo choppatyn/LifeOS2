@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ListRow } from '../../components/ui/ListRow';
 
 const Subsections: React.FC = () => {
   const navigate = useNavigate();
@@ -17,12 +18,10 @@ const Subsections: React.FC = () => {
 
   return (
     <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
-      {/* Шапка */}
       <div className="flex items-center gap-3 mb-4 pt-2">
         <button
           onClick={() => navigate('/profile')}
           className="text-2xl text-muted hover:text-[#c9a84c] transition-colors"
-          aria-label="Назад"
         >
           ←
         </button>
@@ -30,37 +29,15 @@ const Subsections: React.FC = () => {
         <span className="text-xs text-muted ml-auto">{subsections.length} разделов</span>
       </div>
 
-      {/* Список */}
       <div className="space-y-2">
-        {subsections.map((sub) => (
-          <div
-            key={sub.id}
-            onClick={() => navigate(sub.path)}
-            className="flex items-center gap-3 cursor-pointer transition-all rounded-2xl px-3 py-3"
-            style={{
-              background: 'linear-gradient(145deg, #1a1515, #141010)',
-              border: '1px solid #2a2323',
-            }}
-          >
-            {/* Иконка в золотистой подложке */}
-            <div
-              className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(201,168,76,0.12)' }}
-            >
-              <span className="text-lg">{sub.icon}</span>
-            </div>
-
-            {/* Название + подсказка */}
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[#e8e0d8] truncate">
-                {sub.label}
-              </div>
-              <div className="text-xs text-muted truncate">Нажмите для перехода</div>
-            </div>
-
-            {/* Стрелочка */}
-            <span className="text-[#4a3f36] text-2xl leading-none">›</span>
-          </div>
+        {subsections.map((s) => (
+          <ListRow
+            key={s.id}
+            icon={s.icon}
+            title={s.label}
+            subtitle="Нажмите для перехода"
+            path={s.path}
+          />
         ))}
       </div>
     </div>
