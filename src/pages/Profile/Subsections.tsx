@@ -17,15 +17,15 @@ const Subsections: React.FC = () => {
   ];
 
   return (
-    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-20">
+    <div className="container min-h-screen pb-20">
       <div className="flex items-center gap-3 mb-4 pt-2">
         <button
           onClick={() => navigate('/profile')}
-          className="text-2xl text-muted hover:text-[#c9a84c] transition-colors"
+          className="text-2xl text-muted hover:text-[#c9a84c]"
         >
           ←
         </button>
-        <h1 className="text-base font-semibold tracking-wide text-[#e8e0d8]">Подразделы</h1>
+        <h1 className="text-base font-semibold">Подразделы</h1>
         <span className="text-xs text-muted ml-auto">{subsections.length} разделов</span>
       </div>
 
