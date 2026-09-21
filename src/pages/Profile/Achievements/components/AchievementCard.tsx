@@ -24,15 +24,6 @@ export const AchievementCard: React.FC<Props> = ({ item, onClick, onDelete }) =>
           {year && ` • ${year}`}
         </div>
       </div>
-      {onDelete && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          className="text-muted hover:text-[#ef4444] transition-colors text-lg px-1"
-          aria-label="Удалить"
-        >
-          ✕
-        </button>
-      )}
     </div>
   );
 };
