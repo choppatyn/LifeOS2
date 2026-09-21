@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = (import.meta.env.VITE_API_URL as string) || 'https://lifeos-backend-production-d7a2.up.railway.app';
 
 /**
  * Получить initData из Telegram WebApp.
