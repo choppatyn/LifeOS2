@@ -17,9 +17,10 @@
   --color-nav-border: #23202a;
   --color-nav-text: #6b635a;
 
-    --radius-card: 16px;
+  --radius-card: 16px;
   --radius-input: 12px;
   --radius-button: 999px;
+  --radius-button-wide: 14px;
   --radius-badge: 999px;
   --radius-icon: 50%;
 }
@@ -72,11 +73,11 @@
   }
 
   /* Карточка */
-.card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-card);
-  padding: 16px 18px;
+  .card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-card);
+    padding: 16px 18px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
@@ -97,14 +98,14 @@
     color: var(--color-text-muted);
   }
 
-  /* Кнопка золотая */
+  /* Кнопка золотая (маленькая, pill) */
   .btn-gold {
     background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
     color: #0a0808;
     font-weight: 600;
     padding: 12px 24px;
     border: none;
-     border-radius: var(--radius-button);
+    border-radius: var(--radius-button);
     font-size: 15px;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.15s;
@@ -118,7 +119,7 @@
     transform: scale(0.96);
   }
 
-  /* Кнопка-обводка золотая */
+  /* Кнопка-обводка золотая (маленькая, pill) */
   .btn-outline-gold {
     background: transparent;
     color: var(--color-gold);
@@ -131,6 +132,40 @@
     transition: all 0.2s;
   }
   .btn-outline-gold:hover {
+    background: rgba(201, 168, 76, 0.08);
+  }
+
+  /* Широкая кнопка (для действий под карточкой) */
+  .btn-wide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: var(--radius-button-wide);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border: none;
+    box-sizing: border-box;
+  }
+
+  .btn-wide-gold {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+    color: #0a0808;
+    box-shadow: 0 4px 24px rgba(201, 168, 76, 0.2);
+  }
+  .btn-wide-gold:hover {
+    opacity: 0.9;
+  }
+
+  .btn-wide-outline {
+    background: transparent;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold);
+  }
+  .btn-wide-outline:hover {
     background: rgba(201, 168, 76, 0.08);
   }
 
@@ -163,7 +198,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light));
-   border-radius: var(--radius-button);
+    border-radius: var(--radius-button);
     transition: width 0.8s ease;
   }
 
@@ -172,7 +207,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-   border-radius: var(--radius-icon);
+    border-radius: var(--radius-icon);
     background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
     color: #0a0808;
     font-weight: 700;
@@ -223,17 +258,17 @@
   }
 
   /* Нижняя навигация */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--color-nav-bg);
-  border-top: 1px solid var(--color-nav-border);
-  padding: 10px 0 14px;
-  z-index: 50;
-  backdrop-filter: blur(16px);
-}
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-nav-bg);
+    border-top: 1px solid var(--color-nav-border);
+    padding: 10px 0 14px;
+    z-index: 50;
+    backdrop-filter: blur(16px);
+  }
   .bottom-nav-inner {
     display: flex;
     justify-content: space-around;
