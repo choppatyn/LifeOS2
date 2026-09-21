@@ -15,10 +15,10 @@ export const AchievementCard: React.FC<Props> = ({ item, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="flex items-center gap-3 cursor-pointer transition-all rounded-2xl px-3 py-3 mb-2"
+      className="flex items-center gap-3 cursor-pointer transition-all rounded-2xl px-4 py-3 mb-2 hover:border-[#c9a84c]"
       style={{
-        background: 'linear-gradient(145deg, #1a1515, #141010)',
-        border: '1px solid #2a2323',
+        background: 'var(--color-card-bg)',
+        border: '1px solid var(--color-card-border)',
       }}
     >
       <IconCircle>
@@ -26,8 +26,10 @@ export const AchievementCard: React.FC<Props> = ({ item, onClick }) => {
       </IconCircle>
 
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold text-[#e8e0d8] truncate">{item.title}</div>
-        <div className="text-xs text-muted truncate">
+        <div className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+          {item.title}
+        </div>
+        <div className="text-xs truncate" style={{ color: 'var(--color-text-muted)' }}>
           {category?.label}
           {year && ` • ${year}`}
         </div>
