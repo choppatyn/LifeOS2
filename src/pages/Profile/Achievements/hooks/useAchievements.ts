@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { api } from '../../../../hooks/useApi';
 
 export interface Achievement {
   id: string;
@@ -10,16 +11,16 @@ export interface Achievement {
 }
 
 export const CATEGORIES = [
-  { id: 'all',      label: 'Все',         icon: '🏆' },
-  { id: 'personal', label: 'Личные',      icon: '💫' },
-  { id: 'career',   label: 'Карьера',     icon: '💼' },
-  { id: 'finance',  label: 'Финансы',     icon: '💰' },
-  { id: 'health',   label: 'Здоровье',    icon: '❤️' },
-  { id: 'travel',   label: 'Путешествия', icon: '✈️' },
+  { id: 'all', label: 'Все', icon: '🏆' },
+  { id: 'personal', label: 'Личные', icon: '💫' },
+  { id: 'career', label: 'Карьера', icon: '💼' },
+  { id: 'finance', label: 'Финансы', icon: '💰' },
+  { id: 'health', label: 'Здоровье', icon: '❤️' },
+  { id: 'travel', label: 'Путешествия', icon: '✈️' },
 ];
 
+const SECTION = 'achievements';
 const STORAGE_KEY = 'lifeos.achievements';
-const API_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 export function useAchievements() {
   const [items, setItems] = useState<Achievement[]>([]);
@@ -27,27 +28,32 @@ export function useAchievements() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ===== Загрузка: сначала API, потом localStorage =====
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       setLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/profile/achievements`);
-        if (res.ok) {
-          const data = await res.json();
-          if (!cancelled && Array.isArray(data)) {
-            setItems(data);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            setLoading(false);
-            return;
-          }
-        }
-      } catch {}
 
+      // 1. Пытаемся загрузить с backend
+      try {
+        const res = await api.getData(SECTION);
+        if (!cancelled && res && Array.isArray(res.data)) {
+          setItems(res.data);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data));
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn('Backend unavailable, falling back to localStorage:', e);
+      }
+
+      // 2. Fallback — localStorage
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw && !cancelled) {
-        try { setItems(JSON.parse(raw)); } catch {}
+        try {
+          setItems(JSON.parse(raw));
+        } catch {}
       }
       if (!cancelled) setLoading(false);
     }
@@ -56,17 +62,16 @@ export function useAchievements() {
     return () => { cancelled = true; };
   }, []);
 
+  // ===== Сохранение: и API, и localStorage =====
   const persist = useCallback(async (next: Achievement[]) => {
     setItems(next);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+
     try {
       setSaving(true);
-      await fetch(`${API_URL}/profile/achievements`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(next),
-      });
-    } catch {
+      await api.saveData(SECTION, next);
+      setError(null);
+    } catch (e: any) {
       setError('Сохранено локально — сервер недоступен');
     } finally {
       setSaving(false);
