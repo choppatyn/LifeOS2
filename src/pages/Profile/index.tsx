@@ -5,7 +5,6 @@ import { ProfileHeader } from './components/ProfileHeader';
 import { ProfileInfoList, InfoItem } from './components/ProfileInfoList';
 import { ProfileInfoForm } from './components/ProfileInfoForm';
 import { calcAge } from '../../lib/utils';
-import { Button } from '../../components/ui/Button';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
