@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FloatingAddButton } from '../../../components/ui/FloatingAddButton';
 import { RELATIONSHIP_TYPES } from '../../../lib/relationshipTypes';
+import { CONTACT_ROLES } from '../../../lib/contactRoles';
 
 interface Relationship {
   id: string;
   name: string;
   type: string;
+  role: string;
   description: string;
 }
 
@@ -17,19 +19,25 @@ const Relationships: React.FC = () => {
   const [items, setItems] = useState<Relationship[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Relationship | null>(null);
+
   const [name, setName] = useState('');
   const [type, setType] = useState('');
+  const [role, setRole] = useState('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      try { setItems(JSON.parse(raw)); } catch {}
+      try {
+        const parsed = JSON.parse(raw);
+        // Поддержка старых данных без поля role
+        setItems(parsed.map((i: any) => ({ role: '', ...i })));
+      } catch {}
     } else {
       const demo: Relationship[] = [
-        { id: '1', name: 'Анна Смирнова', type: 'Мама', description: '' },
-        { id: '2', name: 'Игорь Смирнов', type: 'Отец', description: '' },
-        { id: '3', name: 'Алексей В.', type: 'Лучший друг / Лучшая подруга', description: '' },
+        { id: '1', name: 'Анна Смирнова', type: 'В отношениях', role: 'Партнёрша', description: '' },
+        { id: '2', name: 'Игорь Смирнов', type: '', role: 'Папа', description: '' },
+        { id: '3', name: 'Алексей В.', type: '', role: 'Лучший друг', description: '' },
       ];
       setItems(demo);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
@@ -43,23 +51,27 @@ const Relationships: React.FC = () => {
 
   const openNew = () => {
     setEditing(null);
-    setName(''); setType(''); setDescription('');
+    setName(''); setType(''); setRole(''); setDescription('');
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openEdit = (item: Relationship) => {
     setEditing(item);
-    setName(item.name); setType(item.type); setDescription(item.description);
+    setName(item.name);
+    setType(item.type);
+    setRole(item.role || '');
+    setDescription(item.description);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSave = () => {
-    if (!name.trim() || !type.trim()) return;
+    if (!name.trim()) return;
     const data = {
       name: name.trim(),
       type: type.trim(),
+      role: role.trim(),
       description: description.trim(),
     };
     if (editing) {
@@ -109,7 +121,22 @@ const Relationships: React.FC = () => {
           </div>
 
           <div>
-            <div className="text-xs text-muted mb-1">Кто это *</div>
+            <div className="text-xs text-muted mb-1">Кем приходится</div>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="input"
+              style={{ appearance: 'none', cursor: 'pointer' }}
+            >
+              <option value="">— Выберите —</option>
+              {CONTACT_ROLES.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <div className="text-xs text-muted mb-1">Кто это (любовь / интим)</div>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
@@ -138,7 +165,7 @@ const Relationships: React.FC = () => {
             <button
               onClick={handleSave}
               className="btn-gold flex-1"
-              disabled={!name.trim() || !type.trim()}
+              disabled={!name.trim()}
             >
               {editing ? 'Сохранить' : 'Добавить'}
             </button>
@@ -169,7 +196,13 @@ const Relationships: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium text-[#c9a84c]">{item.name}</div>
-                  {item.type && <div className="text-xs text-muted">{item.type}</div>}
+                  {(item.role || item.type) && (
+                    <div className="text-xs text-muted">
+                      {item.role}
+                      {item.role && item.type && ' • '}
+                      {item.type}
+                    </div>
+                  )}
                   {item.description && (
                     <div className="text-xs text-muted mt-1">{item.description}</div>
                   )}
@@ -192,8 +225,3 @@ const Relationships: React.FC = () => {
 };
 
 export default Relationships;
-
-
-
-
-
