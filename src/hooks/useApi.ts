@@ -1,28 +1,42 @@
-const API_URL = (import.meta.env.VITE_API_URL as string) || 'https://lifeos-backend-production-d7a2.up.railway.app';
+const API_URL =
+  (import.meta.env.VITE_API_URL as string) ||
+  'https://lifeos-backend-production-d7a2.up.railway.app';
 
 /**
- * Получить initData из Telegram WebApp.
- * Кэшируется, чтобы не дёргать window на каждый запрос.
+ * Всегда берём свежий initData из Telegram (без кэша).
+ * Если Telegram ещё не загрузился — ждём до 3 секунд.
  */
-let cachedInitData: string | null = null;
-
 function getInitData(): string {
-  if (cachedInitData !== null) return cachedInitData;
   const tg = (window as any)?.Telegram?.WebApp;
-  cachedInitData = tg?.initData || '';
-  return cachedInitData;
+  return tg?.initData || '';
+}
+
+/**
+ * Ждём, пока Telegram WebApp отдаст initData.
+ * Нужно потому, что скрипт telegram-web-app.js может грузиться с задержкой.
+ */
+async function waitForInitData(timeoutMs = 3000): Promise<string> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const data = getInitData();
+    if (data && data.length > 0) return data;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return getInitData();
 }
 
 /**
  * Универсальный запрос к API.
- * initData отправляется в теле POST/PUT или в заголовке для GET.
  */
 async function request(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   path: string,
   body?: any
 ) {
-  const initData = getInitData();
+  const initData = await waitForInitData();
+
+  // Для отладки: покажет в консоли, что уходит
+  console.log('[API]', method, path, 'initData length:', initData.length);
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -47,21 +61,12 @@ async function request(
 }
 
 export const api = {
-  // --- AUTH ---
   auth: () => request('POST', '/api/auth', {}),
   me: () => request('POST', '/api/me', {}),
-
-  // --- DATA (универсальные) ---
   getData: (section: string) => request('POST', `/api/data/${section}`, {}),
   saveData: (section: string, data: any) =>
     request('PUT', `/api/data/${section}`, { data }),
-
-  // --- HEALTH ---
   health: () => request('GET', '/api/health'),
 };
 
-
-
-
-
-
+export { getInitData, waitForInitData };
