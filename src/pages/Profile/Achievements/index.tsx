@@ -34,7 +34,7 @@ const Achievements: React.FC = () => {
   };
 
   return (
-    <div className="container min-h-screen bg-[#0a0808] text-[#e8e0d8] pb-24">
+<div className="container min-h-screen pb-24">
       {/* Шапка */}
       <div className="flex items-center gap-3 mb-4 pt-2">
         <button
