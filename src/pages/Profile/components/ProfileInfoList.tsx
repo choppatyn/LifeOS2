@@ -8,26 +8,23 @@ export interface InfoItem {
   link?: string;
 }
 
-interface ProfileInfoListProps {
+interface Props {
   sectionTitle?: string;
   items: InfoItem[];
 }
 
-export const ProfileInfoList: React.FC<ProfileInfoListProps> = ({
-  sectionTitle,
-  items,
-}) => {
+export const ProfileInfoList: React.FC<Props> = ({ sectionTitle, items }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="card">
+    <div
+      className="rounded-2xl px-4 py-3"
+      style={{ background: 'var(--color-card-bg)', border: '1px solid var(--color-card-border)' }}
+    >
       {sectionTitle && (
-        <div className="text-xs text-muted uppercase tracking-wider mb-2">
-          {sectionTitle}
-        </div>
+        <div className="text-xs text-muted uppercase tracking-wider mb-2">{sectionTitle}</div>
       )}
-
-      <div className="space-y-0">
+      <div>
         {items.map((item, idx) => {
           const clickable = Boolean(item.link);
           return (
