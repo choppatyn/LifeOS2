@@ -13,7 +13,7 @@
   --color-input-bg: #0d0b12;
   --color-input-border: #23202a;
   --color-progress-bg: #23202a;
-  --color-nav-bg: #14121a;
+  --color-nav-bg: #0a0810;
   --color-nav-border: #23202a;
   --color-nav-text: #6b635a;
 }
@@ -217,17 +217,17 @@
   }
 
   /* Нижняя навигация */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--color-nav-bg);
-    border-top: 1px solid var(--color-nav-border);
-    padding: 8px 0 12px;
-    z-index: 50;
-    backdrop-filter: blur(12px);
-  }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 8, 16, 0.95);
+  border-top: 1px solid rgba(35, 32, 42, 0.5);
+  padding: 10px 0 14px;
+  z-index: 50;
+  backdrop-filter: blur(16px);
+}
   .bottom-nav-inner {
     display: flex;
     justify-content: space-around;
