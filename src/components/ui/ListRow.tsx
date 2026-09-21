@@ -28,15 +28,11 @@ export const ListRow: React.FC<Props> = ({
   return (
     <div
       onClick={handleClick}
-    className="flex items-center gap-3 cursor-pointer transition-all px-4 py-3 hover:border-[#c9a84c]"
-style={{
-  background: 'var(--color-card-bg)',
-  border: '1px solid var(--color-card-border)',
-  borderRadius: 'var(--radius-card)',
-}}
+      className="flex items-center gap-3 cursor-pointer transition-all px-4 py-3 hover:border-[#c9a84c]"
       style={{
         background: 'var(--color-card-bg)',
         border: '1px solid var(--color-card-border)',
+        borderRadius: 'var(--radius-card)',
       }}
     >
       <IconCircle>
