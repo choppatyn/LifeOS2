@@ -68,10 +68,15 @@ const Achievements: React.FC = () => {
             key={c.id}
             onClick={() => setFilter(c.id)}
             className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-all ${
-              filter === c.id
-                ? 'bg-[#c9a84c] text-black font-semibold'
-                : 'bg-[#1a1515] border border-[#2a2323] text-muted'
-            }`}
+  filter === c.id
+    ? 'font-semibold'
+    : 'text-muted'
+}`}
+style={
+  filter === c.id
+    ? { background: 'var(--color-gold)', color: '#0a0808' }
+    : { background: 'var(--color-card-bg)', border: '1px solid var(--color-card-border)' }
+}
           >
             {c.label}
           </button>
