@@ -136,7 +136,7 @@ const Relationships: React.FC = () => {
           </div>
 
           <div>
-            <div className="text-xs text-muted mb-1">Кто это (любовь / интим)</div>
+            <div className="text-xs text-muted mb-1">Статус отношений (любовь / интим)</div>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
