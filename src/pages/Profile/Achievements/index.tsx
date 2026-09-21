@@ -1,3 +1,4 @@
+import { FloatingAddButton } from '../../../components/ui/FloatingAddButton';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAchievements, Achievement, CATEGORIES } from './hooks/useAchievements';
@@ -120,23 +121,14 @@ style={
       )}
 
       {/* Кнопка "+" */}
-      <button
-        onClick={() => {
-          setEditingItem(null);
-          setShowForm(true);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        className="fixed bottom-24 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold transition-transform hover:scale-105"
-        style={{
-          background: 'linear-gradient(135deg, #c9a84c, #e8d08a)',
-          color: '#0a0808',
-          boxShadow: '0 8px 30px rgba(201,168,76,0.35)',
-          zIndex: 40,
-        }}
-        aria-label="Добавить достижение"
-      >
-        +
-      </button>
+    <FloatingAddButton
+  onClick={() => {
+    setEditingItem(null);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }}
+  ariaLabel="Добавить достижение"
+/>
     </div>
   );
 };
