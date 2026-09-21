@@ -43,46 +43,77 @@ def require_user():
 
 
 # ============================================================
+# ROOT — проверка, что сервис запущен
+# ============================================================
+@app.route('/')
+def root():
+    return jsonify({
+        'service': 'LifeOS API',
+        'status': 'running',
+        'endpoints': [
+            '/api/health',
+            '/api/auth',
+            '/api/me',
+            '/api/data/<section>',
+            '/api/debug',
+            '/api/debug/db',
+        ]
+    })
+
+
+# ============================================================
 # HEALTH
 # ============================================================
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'ok'})
 
+
+# ============================================================
+# DEBUG — отладка initData
+# ============================================================
 @app.route('/api/debug', methods=['POST', 'GET'])
 def debug():
-    """Временный эндпоинт для отладки initData."""
+    """Показывает, что приходит от фронта: initData и его валидация."""
     payload = request.get_json(silent=True) or {}
-    init_data = payload.get('initData') or request.headers.get('X-Telegram-Init-Data') or ''
-    from auth import verify_init_data
+    init_data = (
+        payload.get('initData')
+        or request.headers.get('X-Telegram-Init-Data')
+        or ''
+    )
     verified = verify_init_data(init_data) if init_data else None
     return jsonify({
         'has_init_data': bool(init_data),
         'init_data_length': len(init_data),
-        'init_data_preview': init_data[:100] if init_data else '',
+        'init_data_preview': init_data[:120] if init_data else '',
         'verified_user': verified,
         'bot_token_len': len(os.getenv('BOT_TOKEN', '')),
     })
 
+
 # ============================================================
-# DEBUG — временно, чтобы увидеть, что приходит от Telegram
+# DEBUG DB — содержимое базы
 # ============================================================
-@app.route('/api/debug/last', methods=['POST', 'GET'])
-def debug_last():
-    payload = request.get_json(silent=True) or {}
-    init_data = payload.get('initData') or request.headers.get('X-Telegram-Init-Data') or ''
-    from auth import verify_init_data
-    verified = verify_init_data(init_data) if init_data else None
+@app.route('/api/debug/db')
+def debug_db():
+    """Показывает содержимое users и user_data."""
+    from database import get_db
+    conn = get_db()
+    users = conn.execute(
+        'SELECT id, telegram_id, username, first_name FROM users'
+    ).fetchall()
+    data = conn.execute(
+        'SELECT user_id, section, length(data) AS size FROM user_data'
+    ).fetchall()
+    conn.close()
     return jsonify({
-        'has_init_data': bool(init_data),
-        'init_data_length': len(init_data),
-        'init_data_preview': init_data[:80] if init_data else '',
-        'verified_user': verified,
-        'bot_token_len': len(os.getenv('BOT_TOKEN', '')),
+        'users': [dict(u) for u in users],
+        'data': [dict(d) for d in data],
     })
 
+
 # ============================================================
-# AUTH — проверка входа
+# AUTH — проверка входа через Telegram
 # ============================================================
 @app.route('/api/auth', methods=['POST'])
 def auth():
@@ -130,18 +161,6 @@ def put_data(section):
     save_section(user['id'], section, data)
     return jsonify({'ok': True})
 
-@app.route('/api/debug/db')
-def debug_db():
-    """Временный маршрут для проверки содержимого БД."""
-    from database import get_db
-    conn = get_db()
-    users = conn.execute('SELECT id, telegram_id, username, first_name FROM users').fetchall()
-    data = conn.execute('SELECT user_id, section, length(data) FROM user_data').fetchall()
-    conn.close()
-    return jsonify({
-        'users': [dict(u) for u in users],
-        'data': [dict(d) for d in data],
-    })
 
 # ============================================================
 # ЗАПУСК
@@ -149,12 +168,3 @@ def debug_db():
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
-
-@app.route('/')
-def root():
-    return jsonify({
-        'service': 'LifeOS API',
-        'status': 'running',
-        'endpoints': ['/api/health', '/api/auth', '/api/data/<section>']
-    })
